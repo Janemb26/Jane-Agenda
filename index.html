@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="icone.png">
-<link rel="apple-touch-icon" href="icone.png">
-    <title>Agenda Jane</title>
+  <link rel="apple-touch-icon" href="icone.png">
+  <title>Agenda Jane</title>
   <!-- Fonte Inter (Moderna e Elegante) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -213,7 +213,6 @@
       color: #fff;
     }
 
-    /* ESTILIZAÇÃO DO RESUMO DE STATUS POR CORES NA SIDEBAR (CORES NEON) */
     .status-summary {
       font-size: 0.8rem;
       display: flex;
@@ -247,7 +246,6 @@
       min-height: 100vh;
     }
 
-    /* CABEÇALHO DA PÁGINA */
     .page-header {
       display: flex;
       justify-content: space-between;
@@ -324,7 +322,6 @@
       background-color: var(--border-color);
     }
 
-    /* BARRA DE NAVEGAÇÃO TEMPORAL */
     .date-nav {
       display: flex;
       align-items: center;
@@ -341,7 +338,6 @@
       font-weight: 600;
     }
 
-    /* LISTA DE TAREFAS */
     .task-list {
       display: flex;
       flex-direction: column;
@@ -386,7 +382,6 @@
       gap: 8px;
     }
 
-    /* BADGES DE STATUS COM CORES NEON */
     .status-badge {
       padding: 4px 10px;
       border-radius: 12px;
@@ -421,7 +416,6 @@
       background-color: rgba(0,0,0,0.05);
     }
 
-    /* ALTERAÇÃO DA COR DO VISTO PARA VERDE ESCURO NEON */
     .action-icon-check {
       color: #00E676 !important;
       font-weight: 900;
@@ -446,7 +440,6 @@
       display: block;
     }
 
-    /* VISÃO SEMANAL */
     .week-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
@@ -491,7 +484,6 @@
       font-weight: bold;
     }
 
-    /* VISÃO MENSAL */
     .month-header-days {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
@@ -540,7 +532,6 @@
       border-left: 3px solid #ccc;
     }
 
-    /* VISÃO ANUAL */
     .year-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -573,7 +564,6 @@
       overflow: hidden;
     }
 
-    /* RELATÓRIO */
     .report-filter-bar {
       display: flex;
       align-items: center;
@@ -768,7 +758,6 @@
       color: var(--text-muted);
     }
 
-    /* CONFIGURAÇÃO DE IMPRESSÃO */
     @media print {
       @page {
         size: A4 portrait;
@@ -859,7 +848,7 @@
     <div class="sidebar-section">
       <h4>Resumo de Status</h4>
       <div class="status-summary" id="sidebarStatusSummary">
-        <!-- Calculado dinamicamente com cores neon -->
+        <!-- Calculado dinamicamente -->
       </div>
     </div>
   </aside>
@@ -867,7 +856,6 @@
   <!-- CONTEÚDO PRINCIPAL -->
   <main class="main-content">
 
-    <!-- CABEÇALHO DA PÁGINA -->
     <header class="page-header">
       <h1 class="page-title" id="pageTitle">Agenda Semanal</h1>
 
@@ -882,19 +870,16 @@
       </div>
     </header>
 
-    <!-- NAVEGAÇÃO DE DATAS -->
     <div class="date-nav" id="dateNav">
       <button class="btn-secondary" onclick="navigateDate(-1)">◄ Anterior</button>
       <h3 id="dateNavLabel"></h3>
       <button class="btn-secondary" onclick="navigateDate(1)">Próximo ►</button>
     </div>
 
-    <!-- CONTEÚDO DE CADA VISÃO -->
     <div id="viewContainer">
       <!-- Inserido dinamicamente via JS -->
     </div>
 
-    <!-- RODAPÉ - VERSÍCULO BÍBLICO DIÁRIO -->
     <footer class="footer-verse" id="footerVerse">
       "Lâmpada para os meus pés é tua palavra e luz, para o meu caminho." — Salmos 119:105 (ARA)
     </footer>
@@ -975,8 +960,26 @@
     </div>
   </div>
 
+  <!-- FIREBASE LIBRARIES -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
   <script>
-    /* ==================== CATEGORIAS E DADOS DE EXEMPLO ==================== */
+    /* ==================== CONFIGURAÇÃO DO FIREBASE ==================== */
+    const firebaseConfig = {
+      apiKey: "AIzaSyAGvFd7VGjJp-wEaEa9GPoH6Q0a7xyUrlQ",
+      authDomain: "jane-agenda.firebaseapp.com",
+      databaseURL: "https://jane-agenda-default-rtdb.firebaseio.com",
+      projectId: "jane-agenda",
+      storageBucket: "jane-agenda.firebasestorage.app",
+      messagingSenderId: "330011687418",
+      appId: "1:330011687418:web:57dc519b36ac6998ff0c43"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    /* ==================== CATEGORIAS E DADOS ==================== */
     const taskCategories = {
       "Gestão de equipe": [
         "Ponto", "Férias", "Atestado", "Avaliação", "Petrus/PGD", 
@@ -1020,27 +1023,33 @@
 
     const todayStr = getTodayISO();
 
-    let tasks = [
-      { id: '1', date: todayStr, category: 'Gestão de equipe', sub: 'Auxílio, ensino, dúvidas, pari passo.', status: 'Em andamento', color: '#FF1493', details: 'Acompanhamento contínuo dos projetos.' },
-      { id: '2', date: todayStr, category: 'Periódicos', sub: 'Exemplar', status: 'Aberta', color: '#00E5FF', details: 'Verificação da edição mensal.' },
-      { id: '3', date: todayStr, category: 'Gerais e Administrativo', sub: 'Etiquetas', status: 'Pendente', color: '#FFEA00', details: 'Organização do lote de envio.' },
-      { id: '4', date: todayStr, category: 'Análise da Informação', sub: 'Scaner/Edição - Capa e contracapa', status: 'Concluída', color: '#00FF66', details: 'Digitalização finalizada com êxito.' },
-      { id: '5', date: todayStr, category: 'Gerais e Administrativo', sub: 'Reunião', status: 'Sobrestada', color: '#B0BEC5', details: 'Aguardando definição da pauta.' }
-    ];
-
+    let tasks = [];
     let currentView = 'semanal';
     let currentDate = new Date();
 
     let reportStartDate = todayStr;
     let reportEndDate = todayStr;
 
-    /* ==================== INICIALIZAÇÃO AUTOMÁTICA ==================== */
+    /* ==================== INICIALIZAÇÃO & CONEXÃO TEMPO REAL ==================== */
     window.onload = function() {
       document.getElementById('quickJumpDate').value = todayStr;
       
       populateCategoryDropdown();
       updateVerse();
-      render();
+
+      // Escutar alterações do Firebase em tempo real
+      database.ref('tasks').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          tasks = Object.keys(data).map(key => ({
+            id: key,
+            ...data[key]
+          }));
+        } else {
+          tasks = [];
+        }
+        render();
+      });
     };
 
     function populateCategoryDropdown() {
@@ -1066,7 +1075,14 @@
       document.getElementById('footerVerse').textContent = `"${verse.text}" — ${verse.ref} (ARA)`;
     }
 
-    /* ==================== CONTROLE DE VISÕES E DATAS ==================== */
+    function changeTheme(themeName) {
+      if (themeName === 'padrao') {
+        document.documentElement.removeAttribute('data-theme');
+      } else {
+        document.documentElement.setAttribute('data-theme', themeName);
+      }
+    }
+
     function switchView(view) {
       currentView = view;
       document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -1102,6 +1118,31 @@
       render();
     }
 
+    function updateSidebarSummary() {
+      const counts = {
+        'Aberta': 0,
+        'Em andamento': 0,
+        'Pendente': 0,
+        'Atrasada': 0,
+        'Sobrestada': 0,
+        'Concluída': 0
+      };
+
+      tasks.forEach(t => {
+        if (counts[t.status] !== undefined) counts[t.status]++;
+      });
+
+      const summaryDiv = document.getElementById('sidebarStatusSummary');
+      summaryDiv.innerHTML = `
+        <div class="status-row status-aberta"><span>Aberta</span><span>${counts['Aberta']}</span></div>
+        <div class="status-row status-em-andamento"><span>Em andamento</span><span>${counts['Em andamento']}</span></div>
+        <div class="status-row status-pendente"><span>Pendente</span><span>${counts['Pendente']}</span></div>
+        <div class="status-row status-atrasada"><span>Atrasada</span><span>${counts['Atrasada']}</span></div>
+        <div class="status-row status-sobrestada"><span>Sobrestada</span><span>${counts['Sobrestada']}</span></div>
+        <div class="status-row status-concluida"><span>Concluída</span><span>${counts['Concluída']}</span></div>
+      `;
+    }
+
     function render() {
       updateSidebarSummary();
       const container = document.getElementById('viewContainer');
@@ -1109,468 +1150,276 @@
       const pageTitle = document.getElementById('pageTitle');
       dateNav.style.display = 'flex';
 
+      const isoDate = currentDate.toISOString().split('T')[0];
+
       if (currentView === 'diaria') {
         pageTitle.textContent = "Agenda Diária";
         const dateStr = currentDate.toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        document.getElementById('dateNavLabel').textContent = dateStr;
-        container.innerHTML = renderTaskList(getTasksForDate(currentDate));
-      } 
-      else if (currentView === 'semanal') {
-        pageTitle.textContent = "Agenda Semanal";
-        const startOfWeek = getStartOfWeek(currentDate);
+        document.getElementById('dateNavLabel').textContent = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+        
+        const dayTasks = tasks.filter(t => t.date === isoDate);
+        container.innerHTML = renderTaskList(dayTasks);
+
+      } else if (currentView === 'semanal') {
+        pageTitle.textContent = "Visão Semanal";
+        
+        const startOfWeek = new Date(currentDate);
+        const day = startOfWeek.getDay();
+        const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1);
+        startOfWeek.setDate(diff);
+
         const endOfWeek = new Date(startOfWeek);
         endOfWeek.setDate(endOfWeek.getDate() + 6);
 
-        document.getElementById('dateNavLabel').textContent = `${formatDateBR(startOfWeek)} até ${formatDateBR(endOfWeek)}`;
-        container.innerHTML = renderWeekView(startOfWeek);
-      } 
-      else if (currentView === 'mensal') {
+        document.getElementById('dateNavLabel').textContent = 
+          `${startOfWeek.toLocaleDateString('pt-BR')} a ${endOfWeek.toLocaleDateString('pt-BR')}`;
+
+        let weekHTML = '<div class="week-grid">';
+        for (let i = 0; i < 7; i++) {
+          const d = new Date(startOfWeek);
+          d.setDate(d.getDate() + i);
+          const dISO = d.toISOString().split('T')[0];
+          const count = tasks.filter(t => t.date === dISO).length;
+          const isSelected = dISO === isoDate ? 'active' : '';
+
+          weekHTML += `
+            <div class="week-day-card ${isSelected}" onclick="jumpToDate('${dISO}')">
+              <div class="week-day-name">${d.toLocaleDateString('pt-BR', { weekday: 'short' }).toUpperCase()}</div>
+              <div class="week-day-num">${d.getDate()}</div>
+              ${count > 0 ? `<span class="week-day-badge">${count} taref.</span>` : ''}
+            </div>
+          `;
+        }
+        weekHTML += '</div>';
+
+        const dayTasks = tasks.filter(t => t.date === isoDate);
+        weekHTML += renderTaskList(dayTasks);
+        container.innerHTML = weekHTML;
+
+      } else if (currentView === 'mensal') {
         pageTitle.textContent = "Visão Mensal";
         const monthName = currentDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-        document.getElementById('dateNavLabel').textContent = monthName.toUpperCase();
-        container.innerHTML = renderMonthView();
-      } 
-      else if (currentView === 'anual') {
+        document.getElementById('dateNavLabel').textContent = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+
+        let startingDay = firstDay.getDay() - 1;
+        if (startingDay === -1) startingDay = 6;
+
+        let monthHTML = `
+          <div class="month-header-days">
+            <div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div><div>Dom</div>
+          </div>
+          <div class="month-grid">
+        `;
+
+        for (let i = 0; i < startingDay; i++) {
+          monthHTML += '<div class="month-cell" style="opacity:0.3;"></div>';
+        }
+
+        for (let day = 1; day <= lastDay.getDate(); day++) {
+          const dISO = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+          const dayTasks = tasks.filter(t => t.date === dISO);
+
+          monthHTML += `
+            <div class="month-cell" onclick="jumpToDate('${dISO}'); switchView('diaria');">
+              <div class="month-cell-num">${day}</div>
+              ${dayTasks.map(t => `<div class="month-task-pill" style="border-left-color:${t.color}">${t.sub || t.category}</div>`).join('')}
+            </div>
+          `;
+        }
+
+        monthHTML += '</div>';
+        container.innerHTML = monthHTML;
+
+      } else if (currentView === 'anual') {
         pageTitle.textContent = "Visão Anual";
-        document.getElementById('dateNavLabel').textContent = `Ano: ${currentDate.getFullYear()}`;
-        container.innerHTML = renderYearView();
-      } 
-      else if (currentView === 'relatorios') {
-        pageTitle.textContent = "Relatório de Atividades";
-        dateNav.style.display = 'none';
-        container.innerHTML = renderReportView();
-      }
-    }
+        document.getElementById('dateNavLabel').textContent = `${currentDate.getFullYear()}`;
 
-    /* ==================== RENDERS DAS VISÕES ==================== */
-    function renderTaskList(taskList) {
-      if (taskList.length === 0) {
-        return `<div style="text-align:center; padding:30px; color:var(--text-muted);">Nenhuma tarefa cadastrada para este período.</div>`;
-      }
+        let yearHTML = '<div class="year-grid">';
+        const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
-      return `<div class="task-list">` + taskList.map(task => {
-        const statusSlug = task.status.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-');
-        const statusClass = `status-${statusSlug}`;
-        
-        return `
-          <div class="task-card" style="border-left-color: ${task.color};" onclick="toggleTaskExpand(event, '${task.id}')">
-            <div class="task-header">
-              <div class="task-title-area">
-                <span class="task-title">${task.category} - ${task.sub}</span>
-              </div>
-              <div class="task-actions" onclick="event.stopPropagation()">
-                <select class="status-badge ${statusClass}" onchange="changeTaskStatus('${task.id}', this.value)">
-                  <option value="Aberta" ${task.status === 'Aberta' ? 'selected' : ''}>Aberta</option>
-                  <option value="Em andamento" ${task.status === 'Em andamento' ? 'selected' : ''}>Em andamento</option>
-                  <option value="Pendente" ${task.status === 'Pendente' ? 'selected' : ''}>Pendente</option>
-                  <option value="Atrasada" ${task.status === 'Atrasada' ? 'selected' : ''}>Atrasada</option>
-                  <option value="Sobrestada" ${task.status === 'Sobrestada' ? 'selected' : ''}>Sobrestada</option>
-                  <option value="Concluída" ${task.status === 'Concluída' ? 'selected' : ''}>Concluída</option>
-                </select>
-                <button class="action-icon action-icon-check" title="Concluir Direto" onclick="changeTaskStatus('${task.id}', 'Concluída')">✓</button>
-                <button class="action-icon" title="Editar" onclick="editTask('${task.id}')">✏️</button>
-                <button class="action-icon" title="Excluir" onclick="deleteTask('${task.id}')">🗑️</button>
+        months.forEach((mName, idx) => {
+          const monthStr = String(idx + 1).padStart(2, '0');
+          const monthTasks = tasks.filter(t => t.date.startsWith(`${currentDate.getFullYear()}-${monthStr}`));
+
+          yearHTML += `
+            <div class="year-month-card" onclick="currentDate.setMonth(${idx}); switchView('mensal');">
+              <div class="year-month-title">${mName} (${monthTasks.length})</div>
+              <div class="year-month-tasks">
+                ${monthTasks.slice(0, 4).map(t => `<div class="month-task-pill" style="border-left-color:${t.color}">${t.date.split('-')[2]}: ${t.sub || t.category}</div>`).join('')}
+                ${monthTasks.length > 4 ? `<div>+${monthTasks.length - 4} mais...</div>` : ''}
               </div>
             </div>
-            <div class="task-details" id="details-${task.id}">
-              ${task.details || '<i>Sem observações detalhadas.</i>'}
-            </div>
-          </div>
-        `;
-      }).join('') + `</div>`;
-    }
-
-    function renderWeekView(startOfWeek) {
-      const daysName = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB', 'DOM'];
-      let daysHtml = `<div class="week-grid">`;
-
-      for (let i = 0; i < 7; i++) {
-        const day = new Date(startOfWeek);
-        day.setDate(day.getDate() + i);
-        const dayTasks = getTasksForDate(day);
-        const isSelected = day.toDateString() === currentDate.toDateString();
-
-        daysHtml += `
-          <div class="week-day-card ${isSelected ? 'active' : ''}" onclick="selectDay('${day.toISOString().split('T')[0]}')">
-            <div class="week-day-name">${daysName[i]}</div>
-            <div class="week-day-num">${day.getDate()}</div>
-            <span class="week-day-badge">${dayTasks.length}</span>
-          </div>
-        `;
-      }
-      daysHtml += `</div>`;
-
-      const currentDayTasks = getTasksForDate(currentDate);
-      daysHtml += `<h4 style="margin-bottom:10px; font-size: 0.9rem;">Tarefas: ${currentDate.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</h4>`;
-      daysHtml += renderTaskList(currentDayTasks);
-
-      return daysHtml;
-    }
-
-    function renderMonthView() {
-      const year = currentDate.getFullYear();
-      const month = currentDate.getMonth();
-      const firstDay = new Date(year, month, 1);
-      const lastDay = new Date(year, month + 1, 0);
-
-      let startingDay = firstDay.getDay() - 1;
-      if (startingDay === -1) startingDay = 6;
-
-      let html = `
-        <div class="month-header-days">
-          <div>SEG</div><div>TER</div><div>QUA</div><div>QUI</div><div>SEX</div><div>SÁB</div><div>DOM</div>
-        </div>
-        <div class="month-grid">
-      `;
-
-      for (let i = 0; i < startingDay; i++) {
-        html += `<div class="month-cell" style="opacity:0.3;"></div>`;
-      }
-
-      for (let day = 1; day <= lastDay.getDate(); day++) {
-        const thisDate = new Date(year, month, day);
-        const dateStr = thisDate.toISOString().split('T')[0];
-        const dayTasks = tasks.filter(t => t.date === dateStr);
-
-        html += `
-          <div class="month-cell" onclick="selectDayAndSwitch('${dateStr}')">
-            <div class="month-cell-num">${day}</div>
-            ${dayTasks.slice(0, 3).map(t => `
-              <div class="month-task-pill" style="border-left-color:${t.color}">
-                ${t.sub || t.category}
-              </div>
-            `).join('')}
-            ${dayTasks.length > 3 ? `<span style="font-size:0.6rem; color:var(--text-muted)">+ ${dayTasks.length - 3} mais</span>` : ''}
-          </div>
-        `;
-      }
-
-      html += `</div>`;
-      return html;
-    }
-
-    function renderYearView() {
-      const year = currentDate.getFullYear();
-      const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-
-      let html = `<div class="year-grid">`;
-
-      months.forEach((mName, idx) => {
-        const monthTasks = tasks.filter(t => {
-          const d = new Date(t.date + 'T00:00:00');
-          return d.getFullYear() === year && d.getMonth() === idx;
-        });
-
-        html += `
-          <div class="year-month-card" onclick="selectMonthAndSwitch(${idx})">
-            <div class="year-month-title">${mName}</div>
-            <div class="year-month-tasks">
-              ${monthTasks.length === 0 ? '<span style="color:var(--text-muted)">Sem tarefas</span>' : ''}
-              ${monthTasks.slice(0, 4).map(t => `
-                <div class="month-task-pill" style="border-left-color:${t.color}">${t.sub || t.category}</div>
-              `).join('')}
-              ${monthTasks.length > 4 ? `<span>+ ${monthTasks.length - 4} tarefa(s)</span>` : ''}
-            </div>
-          </div>
-        `;
-      });
-
-      html += `</div>`;
-      return html;
-    }
-
-    /* ==================== RELATÓRIO ==================== */
-    function renderReportView() {
-      const filteredTasks = tasks.filter(t => {
-        if (!reportStartDate && !reportEndDate) return true;
-        if (reportStartDate && t.date < reportStartDate) return false;
-        if (reportEndDate && t.date > reportEndDate) return false;
-        return true;
-      });
-
-      filteredTasks.sort((a, b) => a.date.localeCompare(b.date));
-
-      const tasksHoje = tasks.filter(t => t.date === todayStr).length;
-      
-      const startW = getStartOfWeek(currentDate);
-      const endW = new Date(startW); endW.setDate(endW.getDate() + 6);
-      const startWStr = startW.toISOString().split('T')[0];
-      const endWStr = endW.toISOString().split('T')[0];
-      const tasksSemana = tasks.filter(t => t.date >= startWStr && t.date <= endWStr).length;
-
-      const currentMonth = currentDate.getMonth();
-      const currentYear = currentDate.getFullYear();
-      const tasksMes = tasks.filter(t => {
-        const d = new Date(t.date + 'T00:00:00');
-        return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
-      }).length;
-
-      let html = `
-        <div class="report-filter-bar">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <label>Selecionar Período:</label>
-            <input type="date" id="repStart" value="${reportStartDate}" onchange="updateReportDates(this.value, reportEndDate)">
-            <span>até</span>
-            <input type="date" id="repEnd" value="${reportEndDate}" onchange="updateReportDates(reportStartDate, this.value)">
-          </div>
-          <button class="btn-secondary" onclick="resetReportFilter()">Exibir Todas</button>
-        </div>
-
-        <div class="report-header-box">
-          <div class="report-meta">
-            <span><strong>Nome:</strong> Jane Batista</span>
-            <span><strong>Período Selecionado:</strong> ${reportStartDate ? formatDateBR(new Date(reportStartDate + 'T00:00:00')) : 'Início'} à ${reportEndDate ? formatDateBR(new Date(reportEndDate + 'T00:00:00')) : 'Fim'}</span>
-          </div>
-        </div>
-
-        <div class="report-summary-cards">
-          <div class="report-summary-card">
-            <span>Quantidade por Dia</span>
-            <strong>${tasksHoje}</strong>
-          </div>
-          <div class="report-summary-card">
-            <span>Total na Semana</span>
-            <strong>${tasksSemana}</strong>
-          </div>
-          <div class="report-summary-card">
-            <span>Total no Mês</span>
-            <strong>${tasksMes}</strong>
-          </div>
-        </div>
-
-        <table class="report-table">
-          <thead>
-            <tr>
-              <th class="col-date">Data</th>
-              <th class="col-cat">Categoria</th>
-              <th class="col-desc">Descrição e Detalhes da Tarefa</th>
-              <th class="col-status">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-      `;
-
-      if (filteredTasks.length === 0) {
-        html += `<tr><td colspan="4" style="text-align:center; padding:16px;">Nenhuma atividade registrada no período selecionado.</td></tr>`;
-      } else {
-        filteredTasks.forEach(t => {
-          const statusSlug = t.status.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-');
-          const statusClass = `status-${statusSlug}`;
-          const plainDetails = t.details ? t.details.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim() : '';
-          const fullDesc = t.sub + (plainDetails ? ` — ${plainDetails}` : '');
-
-          html += `
-            <tr>
-              <td class="col-date">${formatDateBR(new Date(t.date + 'T00:00:00'))}</td>
-              <td class="col-cat">${t.category}</td>
-              <td class="col-desc">${fullDesc}</td>
-              <td class="col-status"><span class="status-badge ${statusClass}">${t.status}</span></td>
-            </tr>
           `;
         });
+
+        yearHTML += '</div>';
+        container.innerHTML = yearHTML;
+
+      } else if (currentView === 'relatorios') {
+        pageTitle.textContent = "Relatórios de Tarefas";
+        dateNav.style.display = 'none';
+
+        const filteredTasks = tasks.filter(t => t.date >= reportStartDate && t.date <= reportEndDate);
+
+        container.innerHTML = `
+          <div class="report-filter-bar">
+            <div>
+              <label>De:</label>
+              <input type="date" value="${reportStartDate}" onchange="reportStartDate=this.value; render();">
+            </div>
+            <div>
+              <label>Até:</label>
+              <input type="date" value="${reportEndDate}" onchange="reportEndDate=this.value; render();">
+            </div>
+          </div>
+
+          <div class="report-header-box">
+            <h2>Relatório Gerencial de Atividades</h2>
+            <div class="report-meta">
+              <span><b>Período:</b> ${reportStartDate.split('-').reverse().join('/')} a ${reportEndDate.split('-').reverse().join('/')}</span>
+              <span><b>Total de Registros:</b> ${filteredTasks.length}</span>
+            </div>
+          </div>
+
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th class="col-date">Data</th>
+                <th class="col-cat">Categoria / Tarefa</th>
+                <th class="col-desc">Detalhes / Observações</th>
+                <th class="col-status">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filteredTasks.map(t => `
+                <tr>
+                  <td class="col-date">${t.date.split('-').reverse().join('/')}</td>
+                  <td class="col-cat">${t.category}<br><small style="color:var(--text-muted)">${t.sub || ''}</small></td>
+                  <td class="col-desc">${t.details || '-'}</td>
+                  <td class="col-status"><span class="status-badge status-${t.status.toLowerCase().replace(/\s+/g, '-')}">${t.status}</span></td>
+                </tr>
+              `).join('')}
+              ${filteredTasks.length === 0 ? '<tr><td colspan="4" style="text-align:center;">Nenhuma tarefa encontrada neste período.</td></tr>' : ''}
+            </tbody>
+          </table>
+        `;
+      }
+    }
+
+    function renderTaskList(taskList) {
+      if (taskList.length === 0) {
+        return '<div style="text-align:center; padding: 40px; color: var(--text-muted);">Nenhuma tarefa cadastrada para este dia.</div>';
       }
 
-      html += `
-          </tbody>
-        </table>
-      `;
-
-      return html;
+      return `<div class="task-list">
+        ${taskList.map(t => {
+          const statusClass = t.status.toLowerCase().replace(/\s+/g, '-');
+          return `
+            <div class="task-card" style="border-left-color:${t.color}" onclick="this.classList.toggle('expanded')">
+              <div class="task-header">
+                <div class="task-title-area">
+                  <span class="task-title">${t.category} - ${t.sub || ''}</span>
+                </div>
+                <div class="task-actions" onclick="event.stopPropagation()">
+                  <span class="status-badge status-${statusClass}">${t.status}</span>
+                  <button class="action-icon action-icon-check" title="Concluir Tarefa" onclick="quickComplete('${t.id}')">✓</button>
+                  <button class="action-icon" title="Editar" onclick="openModal('${t.id}')">✏️</button>
+                  <button class="action-icon" title="Excluir" onclick="deleteTask('${t.id}')">🗑️</button>
+                </div>
+              </div>
+              <div class="task-details">
+                ${t.details || 'Sem detalhes adicionais.'}
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>`;
     }
 
-    function updateReportDates(start, end) {
-      reportStartDate = start;
-      reportEndDate = end;
-      render();
-    }
-
-    function resetReportFilter() {
-      reportStartDate = '';
-      reportEndDate = '';
-      render();
-    }
-
-    /* ==================== CRIAÇÃO / EDIÇÃO / EXCLUSÃO ==================== */
-    function toggleTaskExpand(event, id) {
-      const card = event.currentTarget;
-      card.classList.toggle('expanded');
-    }
-
-    function openModal() {
-      document.getElementById('modalTitle').textContent = 'Cadastrar Tarefa';
-      document.getElementById('taskId').value = '';
-      document.getElementById('taskForm').reset();
-      document.getElementById('taskDate').value = getTodayISO();
-      document.getElementById('taskDetails').innerHTML = '';
-      document.getElementById('customTaskGroup').style.display = 'none';
+    /* ==================== AÇÕES DE CRUD NO FIREBASE ==================== */
+    function openModal(id = null) {
       document.getElementById('taskModal').style.display = 'flex';
+      const form = document.getElementById('taskForm');
+      form.reset();
+      document.getElementById('taskDetails').innerHTML = '';
+
+      if (id) {
+        document.getElementById('modalTitle').textContent = 'Editar Tarefa';
+        const task = tasks.find(t => t.id === id);
+        if (task) {
+          document.getElementById('taskId').value = task.id;
+          document.getElementById('taskDate').value = task.date;
+          document.getElementById('taskCategory').value = `${task.category} - ${task.sub}`;
+          document.getElementById('taskStatus').value = task.status;
+          document.getElementById('taskColor').value = task.color;
+          document.getElementById('taskDetails').innerHTML = task.details || '';
+        }
+      } else {
+        document.getElementById('modalTitle').textContent = 'Cadastrar Tarefa';
+        document.getElementById('taskId').value = '';
+        document.getElementById('taskDate').value = document.getElementById('quickJumpDate').value;
+      }
     }
 
     function closeModal() {
       document.getElementById('taskModal').style.display = 'none';
     }
 
-    function handleCategoryChange(value) {
-      const customGroup = document.getElementById('customTaskGroup');
-      if (value.includes('Personalizar')) {
-        customGroup.style.display = 'block';
-      } else {
-        customGroup.style.display = 'none';
-      }
+    function handleCategoryChange(val) {
+      const isCustom = val.includes('Personalizar...') || val.includes('Outro');
+      document.getElementById('customTaskGroup').style.display = isCustom ? 'block' : 'none';
+    }
+
+    function execCmd(cmd, value = null) {
+      document.execCommand(cmd, false, value);
     }
 
     function saveTask(e) {
       e.preventDefault();
+
       const id = document.getElementById('taskId').value;
       const date = document.getElementById('taskDate').value;
-      const catValue = document.getElementById('taskCategory').value;
+      const catVal = document.getElementById('taskCategory').value;
+      const [category, ...subParts] = catVal.split(' - ');
+      let sub = subParts.join(' - ');
+
+      if (sub === 'Personalizar...' || sub === 'Outro' || sub === 'Outros') {
+        const customName = document.getElementById('customTaskName').value.trim();
+        if (customName) sub = customName;
+      }
+
       const status = document.getElementById('taskStatus').value;
       const color = document.getElementById('taskColor').value;
       const details = document.getElementById('taskDetails').innerHTML;
 
-      const [category, sub] = catValue.split(' - ');
-      let finalSub = sub || category;
-
-      if (catValue.includes('Personalizar')) {
-        finalSub = document.getElementById('customTaskName').value || 'Personalizada';
-      }
+      const taskData = { date, category, sub, status, color, details };
 
       if (id) {
-        const task = tasks.find(t => t.id === id);
-        if (task) {
-          task.date = date;
-          task.category = category;
-          task.sub = finalSub;
-          task.status = status;
-          task.color = color;
-          task.details = details;
-        }
+        // Atualiza no Firebase
+        database.ref('tasks/' + id).update(taskData);
       } else {
-        tasks.push({
-          id: Date.now().toString(),
-          date,
-          category,
-          sub: finalSub,
-          status,
-          color,
-          details
-        });
+        // Cria novo ID no Firebase
+        database.ref('tasks').push(taskData);
       }
 
       closeModal();
-      render();
     }
 
-    function editTask(id) {
-      const task = tasks.find(t => t.id === id);
-      if (!task) return;
-
-      document.getElementById('modalTitle').textContent = 'Editar Tarefa';
-      document.getElementById('taskId').value = task.id;
-      document.getElementById('taskDate').value = task.date;
-      document.getElementById('taskCategory').value = `${task.category} - ${task.sub}`;
-      document.getElementById('taskStatus').value = task.status;
-      document.getElementById('taskColor').value = task.color;
-      document.getElementById('taskDetails').innerHTML = task.details || '';
-
-      document.getElementById('taskModal').style.display = 'flex';
-    }
-
-    function changeTaskStatus(id, newStatus) {
-      const task = tasks.find(t => t.id === id);
-      if (task) {
-        task.status = newStatus;
-        render();
-      }
+    function quickComplete(id) {
+      database.ref('tasks/' + id).update({ status: 'Concluída' });
     }
 
     function deleteTask(id) {
-      if (confirm('Tem certeza que deseja remover esta atividade?')) {
-        tasks = tasks.filter(t => t.id !== id);
-        render();
+      if (confirm('Deseja realmente excluir esta tarefa?')) {
+        database.ref('tasks/' + id).remove();
       }
-    }
-
-    /* ==================== FUNÇÕES AUXILIARES ==================== */
-    function getTasksForDate(date) {
-      const dateStr = date.toISOString().split('T')[0];
-      return tasks.filter(t => t.date === dateStr);
-    }
-
-    function getStartOfWeek(d) {
-      const date = new Date(d);
-      const day = date.getDay();
-      const diff = date.getDate() - day + (day === 0 ? -6 : 1);
-      return new Date(date.setDate(diff));
-    }
-
-    function formatDateBR(date) {
-      return date.toLocaleDateString('pt-BR');
-    }
-
-    function selectDay(dateStr) {
-      currentDate = new Date(dateStr + 'T00:00:00');
-      render();
-    }
-
-    function selectDayAndSwitch(dateStr) {
-      currentDate = new Date(dateStr + 'T00:00:00');
-      switchView('diaria');
-    }
-
-    function selectMonthAndSwitch(monthIndex) {
-      currentDate.setMonth(monthIndex);
-      switchView('mensal');
-    }
-
-    function changeTheme(themeName) {
-      if (themeName === 'padrao') {
-        document.body.removeAttribute('data-theme');
-      } else {
-        document.body.setAttribute('data-theme', themeName);
-      }
-    }
-
-    /* ATUALIZAÇÃO DO RESUMO COM AS CORES NEON DOS STATUS */
-    function updateSidebarSummary() {
-      const counts = { Aberta: 0, 'Em andamento': 0, Pendente: 0, Atrasada: 0, Sobrestada: 0, Concluída: 0 };
-      tasks.forEach(t => {
-        if (counts[t.status] !== undefined) counts[t.status]++;
-      });
-
-      document.getElementById('sidebarStatusSummary').innerHTML = `
-        <div class="status-row status-aberta"><span>Abertas:</span> <strong>${counts['Aberta']}</strong></div>
-        <div class="status-row status-em-andamento"><span>Em andamento:</span> <strong>${counts['Em andamento']}</strong></div>
-        <div class="status-row status-pendente"><span>Pendentes:</span> <strong>${counts['Pendente']}</strong></div>
-        <div class="status-row status-atrasada"><span>Atrasadas:</span> <strong>${counts['Atrasada']}</strong></div>
-        <div class="status-row status-sobrestada"><span>Sobrestadas:</span> <strong>${counts['Sobrestada']}</strong></div>
-        <div class="status-row status-concluida"><span>Concluídas:</span> <strong>${counts['Concluída']}</strong></div>
-      `;
-    }
-
-    function execCmd(command, value = null) {
-      document.execCommand(command, false, value);
     }
   </script>
-  <!-- BANCO DE DADOS EM TEMPO REAL (FIREBASE) -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-<script>
-  // Configurações da sua agenda no Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyAGvFd7VGjJp-wEaEa9GPoH6Q0a7xyUrlQ",
-    authDomain: "jane-agenda.firebaseapp.com",
-    databaseURL: "https://jane-agenda-default-rtdb.firebaseio.com",
-    projectId: "jane-agenda",
-    storageBucket: "jane-agenda.firebasestorage.app",
-    messagingSenderId: "330011687418",
-    appId: "1:330011687418:web:57dc519b36ac6998ff0c43"
-  };
-
-  // Inicializa a conexão com o banco de dados
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
-</script>
 </body>
 </html>
