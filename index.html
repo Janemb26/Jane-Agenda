@@ -1118,6 +1118,15 @@
       render();
     }
 
+    // Função utilitária para tratar o nome da classe CSS removendo acentos e caracteres especiais
+    function formatStatusClass(status) {
+      return status
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, '-');
+    }
+
     function updateSidebarSummary() {
       const counts = {
         'Aberta': 0,
@@ -1302,7 +1311,7 @@
                   <td class="col-date">${t.date.split('-').reverse().join('/')}</td>
                   <td class="col-cat">${t.category}<br><small style="color:var(--text-muted)">${t.sub || ''}</small></td>
                   <td class="col-desc">${t.details || '-'}</td>
-                  <td class="col-status"><span class="status-badge status-${t.status.toLowerCase().replace(/\s+/g, '-')}">${t.status}</span></td>
+                  <td class="col-status"><span class="status-badge status-${formatStatusClass(t.status)}">${t.status}</span></td>
                 </tr>
               `).join('')}
               ${filteredTasks.length === 0 ? '<tr><td colspan="4" style="text-align:center;">Nenhuma tarefa encontrada neste período.</td></tr>' : ''}
@@ -1319,7 +1328,7 @@
 
       return `<div class="task-list">
         ${taskList.map(t => {
-          const statusClass = t.status.toLowerCase().replace(/\s+/g, '-');
+          const statusClass = formatStatusClass(t.status);
           return `
             <div class="task-card" style="border-left-color:${t.color}" onclick="this.classList.toggle('expanded')">
               <div class="task-header">
