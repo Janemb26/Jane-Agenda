@@ -1552,5 +1552,25 @@
       document.execCommand(command, false, value);
     }
   </script>
+  <!-- BANCO DE DADOS EM TEMPO REAL (FIREBASE) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+  // Configurações da sua agenda no Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyAGvFd7VGjJp-wEaEa9GPoH6Q0a7xyUrlQ",
+    authDomain: "jane-agenda.firebaseapp.com",
+    databaseURL: "https://jane-agenda-default-rtdb.firebaseio.com",
+    projectId: "jane-agenda",
+    storageBucket: "jane-agenda.firebasestorage.app",
+    messagingSenderId: "330011687418",
+    appId: "1:330011687418:web:57dc519b36ac6998ff0c43"
+  };
+
+  // Inicializa a conexão com o banco de dados
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+</script>
 </body>
 </html>
